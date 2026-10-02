@@ -20,6 +20,10 @@ function generateTaskId() {
   return "task-" + taskCounter;
 }
 
+function clearMessage() {
+  taskMessage.textContent = "";
+}
+
 function validateTaskText(text) {
   const trimmedText = text.trim();
 
@@ -70,13 +74,14 @@ function addTask(taskText) {
 
   taskList.appendChild(createTaskElement(text, generateTaskId()));
   taskInput.value = "";
-  taskMessage.textContent = "";
+  clearMessage();
   updateTaskCounts();
 }
 
 function toggleTaskComplete(taskItem) {
   taskItem.classList.toggle("completed");
   taskItem.dataset.state = taskItem.classList.contains("completed") ? "completed" : "pending";
+  clearMessage();
   updateTaskCounts();
 }
 
@@ -89,6 +94,8 @@ function beginTaskEdit(taskItem) {
 
   textSpan.replaceWith(editInput);
   taskItem.querySelector(".edit-btn").textContent = "Save";
+  clearMessage();
+  editInput.focus();
 }
 
 function saveTaskEdit(taskItem) {
@@ -101,11 +108,12 @@ function saveTaskEdit(taskItem) {
 
   editInput.replaceWith(createTextSpan(text));
   taskItem.querySelector(".edit-btn").textContent = "Edit";
-  taskMessage.textContent = "";
+  clearMessage();
 }
 
 function removeTask(taskItem) {
   taskItem.remove();
+  clearMessage();
   updateTaskCounts();
 }
 
@@ -143,11 +151,20 @@ function loadSampleTasks() {
   });
 
   taskList.appendChild(fragment);
+  clearMessage();
   updateTaskCounts();
 }
 
 addTaskBtn.addEventListener("click", function () {
   addTask(taskInput.value);
 });
+
+// Optional: press Enter in the input to add a task
+taskInput.addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    addTask(taskInput.value);
+  }
+});
+
 loadSamplesBtn.addEventListener("click", loadSampleTasks);
 taskList.addEventListener("click", handleTaskListClick);
