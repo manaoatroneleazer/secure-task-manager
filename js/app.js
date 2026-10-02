@@ -144,6 +144,11 @@ function handleTaskListClick(event) {
 }
 
 function loadSampleTasks() {
+  // Prevent duplicate sample loading
+  if (loadSamplesBtn.disabled) {
+    return;
+  }
+
   const fragment = document.createDocumentFragment();
 
   SAMPLE_TASKS.forEach(function (taskText) {
@@ -151,6 +156,7 @@ function loadSampleTasks() {
   });
 
   taskList.appendChild(fragment);
+  loadSamplesBtn.disabled = true;
   clearMessage();
   updateTaskCounts();
 }
